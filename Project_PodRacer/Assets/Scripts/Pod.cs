@@ -4,56 +4,56 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Pod : MonoBehaviour {
-	Rigidbody rigidBody;
+	Rigidbody rb;
 	// thrusters
-	[SerializeField] float speed = 1f;
-	[SerializeField] float tiltSpeed = 10f;
-	[SerializeField] float thrusterSpacing = 1.0f;
+	[SerializeField] float speedModifier = 3f;
+	[SerializeField] float rotateModifier = 10f;
+	float speed = 1f;
+	float currentAngle = 0f;
 	float[] thrusterIntensity = {0.0f, 0.0f};
 
 
 	// Use this for initialization
 	void Start () {
-		rigidBody = GetComponent<Rigidbody>();
+		rb = GetComponent<Rigidbody>();
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		Vector3 oppositeVelocity = -rigidBody.velocity;
-   		rigidBody.AddRelativeForce(oppositeVelocity);
-
-		Vector3 oppositeAngularVelocity = -rigidBody.angularVelocity;
-		rigidBody.AddRelativeTorque(oppositeAngularVelocity);
-	
-		//ClampRotation();
+		//Vector3 oppositeVelocity = -rb.velocity;
+   		//rb.AddForce(oppositeVelocity);
 	}
 
 	public void Move(float[] intensity) {
-		Vector3 direction = new Vector3(0,0,0);
-		if(intensity[0] == intensity[1]) {
-			direction = new Vector3(0, 0, intensity[0]);
-			direction = transform.forward * intensity[0];
-			//transform.position += transform.forward * intensity[0] * speed;
-			rigidBody.AddRelativeForce(direction * speed,ForceMode.Impulse);
+		float angleLeft = intensity[0];
+		float angleRight = intensity[1];
+
+
+		if(angleLeft != 0 || angleRight != 0) {
+			if(angleLeft == angleRight) {
+				// forward
+				speed = angleRight * speedModifier;
+
+				rb.AddForce(transform.forward * speed, ForceMode.Impulse);
+			} else {
+				if(angleLeft > angleRight) {
+					// left higher, so turn right
+					currentAngle = (angleLeft - angleRight);
+				} else if (angleRight > angleLeft) {
+					// right higher, so turn left
+					currentAngle = -(angleRight - angleLeft);
+				}
+
+				float tempLeft = angleLeft; float tempRight = angleRight;
+				if(tempLeft < 0f) tempLeft = 0f;
+				if(tempRight < 0f) tempRight = 0f;
+				speed = Mathf.Abs(tempLeft - tempRight)/speedModifier;
+				
+				rb.AddForce(transform.forward * speed, ForceMode.Impulse);
+				transform.Rotate(transform.up * currentAngle);
+			}
 		}
 
-		if(intensity[0] > intensity[1]) {
-			direction = new Vector3(0, -intensity[0], -intensity[0]);
-			rigidBody.AddRelativeTorque(direction * tiltSpeed);
-		}
-
-		if(intensity[1] > intensity[0]) {
-			direction = new Vector3(0, intensity[1], intensity[1]);
-			rigidBody.AddRelativeTorque(direction * tiltSpeed);
-		}
-
-		Debug.Log("Pod : " + direction.ToString());
-
-	}
-
-	void ClampRotation() {
-		Vector3 currentRotation = transform.localRotation.eulerAngles;
-		currentRotation.y = Mathf.Clamp(currentRotation.y, -40, 40);
-		transform.localRotation = Quaternion.Euler(currentRotation);
+		
 	}
 }
