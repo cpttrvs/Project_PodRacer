@@ -30,9 +30,11 @@ public class Pod : MonoBehaviour {
 		if(thrusterIntensity[0] == thrusterIntensity[1]){
 			desiredRotation.eulerAngles = new Vector3(desiredRotation.eulerAngles.x, desiredRotation.eulerAngles.y, 0);
 		}
+		// Tilting right
 		else if(currentTilt < 0){
 			desiredRotation.eulerAngles = new Vector3(desiredRotation.eulerAngles.x, desiredRotation.eulerAngles.y, -maxInclineAngle);
 		}
+		// Tilting left
 		else if(currentTilt > 0){
 			desiredRotation.eulerAngles = new Vector3(desiredRotation.eulerAngles.x, desiredRotation.eulerAngles.y, maxInclineAngle);
 		}
@@ -80,6 +82,6 @@ public class Pod : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter(Collider collider) {
-		Debug.Log("Beep "+collider.name);
+		GameManager.CrossedFinishLine();
 	}
 }

@@ -25,23 +25,25 @@ public class Controller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//reduce speed
-		intensity[0] -= Time.deltaTime;
-		intensity[1] -= Time.deltaTime;
+		if(GameManager.GameOn()){
+			//reduce speed
+			intensity[0] -= Time.deltaTime;
+			intensity[1] -= Time.deltaTime;
 
-		if(leapMotion) {
-			LeapMotionInput();
-		} else {
-			KeyboardInput();
+			if(leapMotion) {
+				LeapMotionInput();
+			} else {
+				KeyboardInput();
+			}
+
+
+			//if(intensity[0] != 0 || intensity[1] != 0) Debug.Log("Controller : L(" + intensity[0] +") R("+ intensity[1] + ")");
+			pod.Move(intensity);
+			pod.Boost(boost);
+
+			leftLabel.text = intensity[0].ToString();
+			rightLabel.text = intensity[1].ToString();
 		}
-
-
-		//if(intensity[0] != 0 || intensity[1] != 0) Debug.Log("Controller : L(" + intensity[0] +") R("+ intensity[1] + ")");
-		pod.Move(intensity);
-		pod.Boost(boost);
-
-		leftLabel.text = intensity[0].ToString();
-		rightLabel.text = intensity[1].ToString();
 	}
 
 	void KeyboardInput() {
