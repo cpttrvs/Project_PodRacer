@@ -13,6 +13,7 @@ public class Controller : MonoBehaviour {
 	//inputs
 	bool leapMotion = false;
 	float[] intensity = {0f, 0f}; // between 0 and 1
+	bool boost = false;
 
 	//pod
 	Pod pod;
@@ -37,6 +38,7 @@ public class Controller : MonoBehaviour {
 
 		//if(intensity[0] != 0 || intensity[1] != 0) Debug.Log("Controller : L(" + intensity[0] +") R("+ intensity[1] + ")");
 		pod.Move(intensity);
+		pod.Boost(boost);
 
 		leftLabel.text = intensity[0].ToString();
 		rightLabel.text = intensity[1].ToString();
@@ -45,6 +47,7 @@ public class Controller : MonoBehaviour {
 	void KeyboardInput() {
 		intensity[0] = Input.GetAxis("LeftPod");
 		intensity[1] = Input.GetAxis("RightPod");
+		boost = Input.GetButton("Fire1");
 	}
 
 	void LeapMotionInput() {

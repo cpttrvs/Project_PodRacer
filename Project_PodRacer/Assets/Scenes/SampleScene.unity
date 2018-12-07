@@ -678,6 +678,11 @@ Prefab:
       propertyPath: m_LocalPosition.z
       value: 3.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114937550353575700, guid: 5999575496a014659b82581bc606e856,
+        type: 2}
+      propertyPath: boostModifier
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5999575496a014659b82581bc606e856, type: 2}
   m_IsPrefabAsset: 0
