@@ -30,6 +30,7 @@ public class Controller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(GameManager.GameOn()){
 		//reduce speed
 		intensity[0] -= Time.deltaTime;
 		intensity[1] -= Time.deltaTime;
@@ -56,6 +57,7 @@ public class Controller : MonoBehaviour {
 
 		particleLeft.GetComponent<ParticleSystemRenderer>().pivot = new Vector3(intensity[0], 0, 0);
 		particleRight.GetComponent<ParticleSystemRenderer>().pivot = new Vector3(intensity[1], 0, 0);
+		}
 	}
 
 	void KeyboardInput() {
