@@ -102,4 +102,8 @@ public class Pod : MonoBehaviour {
 				currentBoost = boostQuantity;
 		}
 	}
+
+	private void OnTriggerEnter(Collider collider) {
+		Debug.Log("Beep "+collider.name);
+	}
 }
