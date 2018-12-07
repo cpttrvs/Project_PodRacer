@@ -78,4 +78,8 @@ public class Pod : MonoBehaviour {
 		else
 			currentSpeed = speedModifier;
 	}
+
+	private void OnTriggerEnter(Collider collider) {
+		Debug.Log("Beep "+collider.name);
+	}
 }
