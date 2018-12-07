@@ -5,15 +5,25 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Pod : MonoBehaviour {
 	Rigidbody rb;
-	// thrusters
+	// speed and angles
 	[SerializeField] float speedModifier = 3f;
-	[SerializeField] float boostModifier = 4f;
 	[SerializeField] float tiltModifier = 2f;
+	[SerializeField] float tiltSmoothness = 0.5f;
 	[SerializeField] float maxInclineAngle = 20f;
-	float speed = 1f;
+	// boost
+	[SerializeField] float boostQuantity = 1000f;
+	[SerializeField] float boostModifier = 4f;
+	[SerializeField] float boostRegeneration = 3f;
+	[SerializeField] float boostUsedPerFrame = 10f;
+
+	// values at runtime
+	public float currentBoost = 0f;
 	float currentAngle = 0f;
 	float currentTilt = 0f;
-	float currentSpeed;
+	public float currentSpeed = 0f;
+	
+	// values storage
+	float speed = 1f;
 	float[] thrusterIntensity = {0.0f, 0.0f};
 
 
@@ -21,10 +31,13 @@ public class Pod : MonoBehaviour {
 	void Start () {
 		rb = GetComponent<Rigidbody>();
 		currentSpeed = speedModifier;
+		currentBoost = boostQuantity;
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		//Debug.Log(currentBoost);
+
 		Quaternion desiredRotation = transform.rotation;
 		// Not tilting
 		if(thrusterIntensity[0] == thrusterIntensity[1]){
@@ -36,7 +49,7 @@ public class Pod : MonoBehaviour {
 		else if(currentTilt > 0){
 			desiredRotation.eulerAngles = new Vector3(desiredRotation.eulerAngles.x, desiredRotation.eulerAngles.y, maxInclineAngle);
 		}
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, desiredRotation, 1);
+		transform.rotation = Quaternion.RotateTowards(transform.rotation, desiredRotation, tiltSmoothness);
 	}
 
 	public void Move(float[] intensity) {
@@ -73,9 +86,20 @@ public class Pod : MonoBehaviour {
 	}
 
 	public void Boost(bool value){
-		if(value)
-			currentSpeed = speedModifier * boostModifier;
-		else
+		if(value) {
+			currentBoost -= boostUsedPerFrame;
+			if(currentBoost > 0) {
+				currentSpeed = speedModifier * boostModifier;
+			} else {
+				currentSpeed = speedModifier;
+				currentBoost = 0f;
+			}
+		} else {
 			currentSpeed = speedModifier;
+			// add boost
+			currentBoost += boostRegeneration;
+			if(currentBoost > boostQuantity)
+				currentBoost = boostQuantity;
+		}
 	}
 }
