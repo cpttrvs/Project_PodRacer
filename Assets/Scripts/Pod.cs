@@ -37,6 +37,7 @@ public class Pod : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		//Debug.Log(currentBoost);
+		//Debug.Log("velocity: "+rb.velocity+" KM/H: "+rb.velocity.z/1000*60*60);
 
 		Quaternion desiredRotation = transform.rotation;
 		// Not tilting
@@ -106,6 +107,6 @@ public class Pod : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter(Collider collider) {
-		GameManager.CrossedFinishLine();
+		FindObjectOfType<GameManager>().SendMessage("CrossedFinishLine");
 	}
 }

@@ -2,29 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
 	private static string PREFS_TIME = "TIME";
-	private static bool gameOn = false;
+	private static bool gameOn;
+	private static float timer;
 
+	// Gameplay UI
+	[SerializeField] GameObject gameplayUI;
 	[SerializeField] Text hightimeText;
 	[SerializeField] Text countdownText;
 	[SerializeField] Text timerText;
 
-	private static float timer = 0f;
+	// Finish UI
+	[SerializeField] GameObject finishUI;
+	[SerializeField] Text finishTimeText;
+	[SerializeField] Text newHightimeText;
 
 	// Use this for initialization
 	void Start () {
-		hightimeText.text = "Hightime: "+PlayerPrefs.GetFloat(PREFS_TIME).ToString("F2").Replace(",", ".")+"s";
+		SetHighTime();
 		StartCoroutine(Countdown());
+		gameOn = false;
+		timer = 0f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(gameOn){
 			timer += Time.deltaTime;
-			timerText.text = timer.ToString("F2").Replace(",", ".")+"s";
+			timerText.text = FormatTime(timer);
+		}
+		// We finished the level
+		else if(!gameOn && timer > 0){
+			if(Input.GetKeyDown(KeyCode.Space)){
+				RestartLevel();
+			}
 		}
 	}
 
@@ -39,16 +54,51 @@ public class GameManager : MonoBehaviour {
 		countdownText.text = "";
 	}
 
+	IEnumerator Hightime(){
+		newHightimeText.gameObject.SetActive(true);
+		while(true){
+			newHightimeText.gameObject.SetActive(true);
+			yield return new WaitForSeconds(1f);
+			newHightimeText.gameObject.SetActive(false);
+			yield return new WaitForSeconds(1f);
+		}
+	}
+
 	public static bool GameOn(){
 		return gameOn;
 	}
 
-	public static void CrossedFinishLine(){
+	public void CrossedFinishLine(){
 		gameOn = false;
-		Debug.Log("Time: "+timer+" Hightime: "+PlayerPrefs.GetFloat(PREFS_TIME));
-		if (timer < PlayerPrefs.GetFloat(PREFS_TIME))
+		Debug.Log("Hightime: "+PlayerPrefs.GetFloat(PREFS_TIME)+" Time: "+timer);
+		finishTimeText.text = FormatTime(timer);
+		// If it's 0 it means that we don't have a hightime yet
+		if (timer < PlayerPrefs.GetFloat(PREFS_TIME) || PlayerPrefs.GetFloat(PREFS_TIME) == 0)
         {
             PlayerPrefs.SetFloat(PREFS_TIME, timer);
+			SetHighTime();
+			StartCoroutine(Hightime());
 		}
+		gameplayUI.SetActive(false);
+		finishUI.SetActive(true);
+	}
+
+	private string FormatTime(float time){
+		return time.ToString("F2").Replace(",", ".")+"s";
+	}
+
+	private void SetHighTime(){
+		float time = PlayerPrefs.GetFloat(PREFS_TIME);
+		if(time != 0){
+			hightimeText.text = "Hightime: "+FormatTime(time);
+		}
+		// No hightime yet
+		else{
+			hightimeText.text = "Hightime: NA";
+		}
+	}
+
+	public void RestartLevel(){
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 }
