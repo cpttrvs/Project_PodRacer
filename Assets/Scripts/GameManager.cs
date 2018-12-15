@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
 
 	private static string PREFS_TIME = "TIME";
 	private static bool gameOn;
+	private static bool levelFinished;
 	private static float timer;
 
 	// Gameplay UI
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour {
 		SetHighTime();
 		StartCoroutine(Countdown());
 		gameOn = false;
+		levelFinished = false;
 		timer = 0f;
 	}
 	
@@ -68,9 +70,13 @@ public class GameManager : MonoBehaviour {
 		return gameOn;
 	}
 
+	public static bool LevelFinished(){
+		return levelFinished;
+	}
+
 	public void CrossedFinishLine(){
 		gameOn = false;
-		Debug.Log("Hightime: "+PlayerPrefs.GetFloat(PREFS_TIME)+" Time: "+timer);
+		levelFinished = true;
 		finishTimeText.text = FormatTime(timer);
 		// If it's 0 it means that we don't have a hightime yet
 		if (timer < PlayerPrefs.GetFloat(PREFS_TIME) || PlayerPrefs.GetFloat(PREFS_TIME) == 0)

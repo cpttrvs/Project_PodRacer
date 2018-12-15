@@ -7,7 +7,7 @@ using Leap;
 [RequireComponent(typeof(Pod))]
 public class Controller : MonoBehaviour {
 
-	//UI
+	// UI
 	[SerializeField] Text leftLabel;
 	[SerializeField] Text rightLabel;
 	[SerializeField] Text boostLabel;
@@ -16,15 +16,17 @@ public class Controller : MonoBehaviour {
 	[SerializeField] ParticleSystem particleRight;
 	[SerializeField] ParticleSystem particleLeft;
 
-    //Leap
+    // Leap
     Leap.Controller leapController;
+    float leftRaw = 0f;
+    float rightRaw = 0f;
 
-	//inputs
+	// Inputs
 	bool leapMotion = true;
 	float[] intensity = {0f, 0f}; // between 0 and 1
 	bool boost = false;
 
-	//pod
+	// Pod
 	Pod pod;
 
 	// Use this for initialization
@@ -35,18 +37,19 @@ public class Controller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		// inputs
+		if(leapMotion) {
+			LeapMotionInput();
+		}
+		else {
+			KeyboardInput();
+		}
+
 		if(GameManager.GameOn()){
 			//reduce speed
 			intensity[0] -= Time.deltaTime;
 			intensity[1] -= Time.deltaTime;
-
-			// inputs
-			if(leapMotion) {
-				LeapMotionInput();
-			}
-			else {
-				KeyboardInput();
-			}
 
             intensity[0] = Round(intensity[0], 1);
             intensity[1] = Round(intensity[1], 1);
@@ -75,17 +78,17 @@ public class Controller : MonoBehaviour {
     }
 
     void KeyboardInput() {
-		intensity[0] = Input.GetAxis("LeftPod");
-		intensity[1] = Input.GetAxis("RightPod");
-		boost = Input.GetButton("Fire1");
+		if(GameManager.GameOn()){
+			intensity[0] = Input.GetAxis("LeftPod");
+			intensity[1] = Input.GetAxis("RightPod");
+			boost = Input.GetButton("Fire1");
+		}
 	}
-
-    float leftRaw = 0f;
-    float rightRaw = 0f;
 
 	void LeapMotionInput() {
         float range = 50f;
         Leap.Frame frame = leapController.Frame();
+		// We retrieve the hand position information
         if(frame.Hands.Count == 1) {
             if (frame.Hands[0].IsLeft) {
                 leftRaw = frame.Hands[0].PalmPosition.z;
@@ -95,6 +98,18 @@ public class Controller : MonoBehaviour {
             }
         }
         else if(frame.Hands.Count == 2) {
+			// If we finished the level we can restart it by clapping in our hands! *CLAP*
+			if(GameManager.LevelFinished() && 
+				Vector3.Distance(new Vector3(frame.Hands[0].PalmPosition.x, frame.Hands[0].PalmPosition.y, frame.Hands[0].PalmPosition.z), 
+								new Vector3(frame.Hands[1].PalmPosition.x, frame.Hands[1].PalmPosition.y, frame.Hands[1].PalmPosition.z)) < 30f){
+									FindObjectOfType<GameManager>().SendMessage("RestartLevel");
+			}
+			// For the boost we make fists with our hands, we only check on the index finger 'cause less costly and works fine
+			boost = (GameManager.GameOn() && 
+					Vector3.Cross(new Vector3(frame.Hands[0].Fingers[1].Direction.x, frame.Hands[0].Fingers[1].Direction.y, frame.Hands[0].Fingers[1].Direction.z),
+												new Vector3(frame.Hands[0].PalmNormal.x, frame.Hands[0].PalmNormal.y, frame.Hands[0].PalmNormal.z)).x > 0.5f &&
+					Vector3.Cross(new Vector3(frame.Hands[1].Fingers[1].Direction.x, frame.Hands[1].Fingers[1].Direction.y, frame.Hands[1].Fingers[1].Direction.z),
+												new Vector3(frame.Hands[1].PalmNormal.x, frame.Hands[1].PalmNormal.y, frame.Hands[1].PalmNormal.z)).x > 0.5f);
             if (frame.Hands[0].IsLeft) {
                 leftRaw = frame.Hands[0].PalmPosition.z;
                 rightRaw = frame.Hands[1].PalmPosition.z;
@@ -104,14 +119,16 @@ public class Controller : MonoBehaviour {
                 rightRaw = frame.Hands[0].PalmPosition.z;
             }
         }      
+		// We cap the values so that the user only has to make a hand motion in a certain range
         if(leftRaw < -range || leftRaw > range) {
             leftRaw = range * Mathf.Sign(leftRaw);
         }
         if (rightRaw < -range || rightRaw > range) {
             rightRaw = range * Mathf.Sign(rightRaw);
         }
-        intensity[0] = - leftRaw / range;
-        intensity[1] = - rightRaw / range;
-        boost = Input.GetButton("Fire1");
+		if(GameManager.GameOn()){
+			intensity[0] = - leftRaw / range;
+			intensity[1] = - rightRaw / range;
+		}
     }
 }
