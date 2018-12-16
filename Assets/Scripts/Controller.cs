@@ -18,12 +18,13 @@ public class Controller : MonoBehaviour {
 
     // Leap
     Leap.Controller leapController;
+	Leap.Frame frame;
     float leftRaw = 0f;
     float rightRaw = 0f;
 
 	// Inputs
 	bool leapMotion = true;
-	float[] intensity = {0f, 0f}; // between 0 and 1
+	float[] intensity = {0f, 0f}; // between -1 and 1
 	bool boost = false;
 
 	// Pod
@@ -37,7 +38,6 @@ public class Controller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
 		// inputs
 		if(leapMotion) {
 			LeapMotionInput();
@@ -87,7 +87,7 @@ public class Controller : MonoBehaviour {
 
 	void LeapMotionInput() {
         float range = 50f;
-        Leap.Frame frame = leapController.Frame();
+        frame = leapController.Frame();
 		// We retrieve the hand position information
         if(frame.Hands.Count == 1) {
             if (frame.Hands[0].IsLeft) {

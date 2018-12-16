@@ -9,7 +9,7 @@ public class Pod : MonoBehaviour {
 	[SerializeField] float speedModifier = 3f;
 	[SerializeField] float tiltModifier = 2f;
 	[SerializeField] float tiltSmoothness = 0.5f;
-	[SerializeField] float maxInclineAngle = 20f;
+	[SerializeField] float maxInclineAngle = 15f;
 	// boost
 	[SerializeField] float boostQuantity = 1000f;
 	[SerializeField] float boostModifier = 4f;
@@ -107,6 +107,7 @@ public class Pod : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter(Collider collider) {
-		FindObjectOfType<GameManager>().SendMessage("CrossedFinishLine");
+		if(collider.tag.Equals("FINISH"))
+			FindObjectOfType<GameManager>().SendMessage("CrossedFinishLine");
 	}
 }
