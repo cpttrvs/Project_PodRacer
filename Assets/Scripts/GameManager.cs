@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-	private static string PREFS_TIME = "TIME";
+	private static string PREFS_TUTORIAL_TIME = "TUTORIAL_TIME";
+	private static string PREFS_LEVEL_TIME = "LEVEL_TIME";
 	private static bool gameOn;
 	private static bool levelFinished;
 	private static float timer;
@@ -114,10 +115,21 @@ public class GameManager : MonoBehaviour {
 		gameOn = false;
 		levelFinished = true;
 		finishTimeText.text = FormatTime(timer);
-		// If it's 0 it means that we don't have a hightime yet
-		if (timer < PlayerPrefs.GetFloat(PREFS_TIME) || PlayerPrefs.GetFloat(PREFS_TIME) == 0)
-        {
-            PlayerPrefs.SetFloat(PREFS_TIME, timer);
+		bool newTime = false;
+		// Tutorial
+		if(SceneManager.GetActiveScene().buildIndex == 1 && 
+			(timer < PlayerPrefs.GetFloat(PREFS_TUTORIAL_TIME) || PlayerPrefs.GetFloat(PREFS_TUTORIAL_TIME) == 0)){
+				PlayerPrefs.SetFloat(PREFS_TUTORIAL_TIME, timer);
+				newTime = true;
+		}
+		// Level
+		else if(SceneManager.GetActiveScene().buildIndex == 2 && 
+			(timer < PlayerPrefs.GetFloat(PREFS_LEVEL_TIME) || PlayerPrefs.GetFloat(PREFS_LEVEL_TIME) == 0)){
+				PlayerPrefs.SetFloat(PREFS_LEVEL_TIME, timer);
+				newTime = true;
+		}
+		// New hightime
+		if(newTime){
 			SetHighTime();
 			StartCoroutine(Hightime());
 		}
@@ -130,13 +142,21 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void SetHighTime(){
-		float time = PlayerPrefs.GetFloat(PREFS_TIME);
-		if(time != 0){
+		float time = 0f;
+		// Tutorial
+		if(SceneManager.GetActiveScene().buildIndex == 1){
+			time = PlayerPrefs.GetFloat(PREFS_TUTORIAL_TIME);
+		}
+		// Level
+		else if(SceneManager.GetActiveScene().buildIndex == 2){
+			time = PlayerPrefs.GetFloat(PREFS_LEVEL_TIME);
+		}
+		if(time > 0){
 			hightimeText.text = "Hightime: "+FormatTime(time);
 		}
 		// No hightime yet
 		else{
-			hightimeText.text = "Hightime: NA";
+			hightimeText.text = "";
 		}
 	}
 
