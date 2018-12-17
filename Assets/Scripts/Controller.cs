@@ -23,7 +23,7 @@ public class Controller : MonoBehaviour {
     float rightRaw = 0f;
 
 	// Inputs
-	bool leapMotion = true;
+	bool leapMotion = false;
 	float[] intensity = {0f, 0f}; // between -1 and 1
 	bool boost = false;
 
