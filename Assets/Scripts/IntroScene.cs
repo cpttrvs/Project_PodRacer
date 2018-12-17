@@ -92,37 +92,6 @@ public class IntroScene : MonoBehaviour {
 		yield return null;
 	}
 
-	IEnumerator DriveToTitle(){
-		while(intensity[0] <= 1f){
-			intensity[0] += 0.1f;
-			intensity[1] += 0.1f;
-			yield return new WaitForSeconds(0.25f);
-		}
-
-		intensity[1] = 0.5f;
-		yield return new WaitForSeconds(1.5f);
-		intensity[0] = 0.5f;
-
-		yield return new WaitForSeconds(0.1f);
-		intensity[0] = 1f;
-		intensity[1] = 1f;
-		
-		yield return new WaitForSeconds(1.5f);
-		intensity[1] = 0.5f;
-		
-		yield return new WaitForSeconds(1.5f);
-		intensity[1] = 1f;
-
-		yield return new WaitForSeconds(3f);
-		Debug.Log("Turn: "+transform.position);
-		intensity[0] = 0f;
-		intensity[1] = 1f;
-		
-		yield return new WaitForSeconds(3f);
-		intensity[0] = 0f;
-		intensity[1] = 0f;
-	}
-
 	private void OnTriggerEnter(Collider collider) {
 		if(collider.name.Equals("BannerTrigger"))
 			titleBanner.SetActive(true);
