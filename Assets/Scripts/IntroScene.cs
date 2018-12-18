@@ -47,9 +47,11 @@ public class IntroScene : MonoBehaviour {
 		if(frame.Hands.Count == 2) {
 			if(Vector3.Distance(new Vector3(frame.Hands[0].PalmPosition.x, frame.Hands[0].PalmPosition.y, frame.Hands[0].PalmPosition.z), 
 								new Vector3(frame.Hands[1].PalmPosition.x, frame.Hands[1].PalmPosition.y, frame.Hands[1].PalmPosition.z)) < 30f){
-				Debug.Log("Loading Tutorial Scene");
 				loadTutorial = true;
 			}
+		}
+		else if(Input.GetKeyDown(KeyCode.Space)){
+				loadTutorial = true;
 		}
 
 		if(loadTutorial){			
