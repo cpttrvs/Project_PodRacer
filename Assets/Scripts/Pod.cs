@@ -1,20 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Pod : MonoBehaviour {
-	Rigidbody rb;
 	// speed and angles
 	[SerializeField] float speedModifier = 3f;
 	[SerializeField] float tiltModifier = 2f;
 	[SerializeField] float tiltSmoothness = 0.5f;
 	[SerializeField] float maxInclineAngle = 15f;
+
 	// boost
+	[SerializeField] RectTransform boostBarContainer;
+	[SerializeField] RectTransform boostBarFill;
 	[SerializeField] float boostQuantity = 1000f;
 	[SerializeField] float boostModifier = 4f;
 	[SerializeField] float boostRegeneration = 3f;
 	[SerializeField] float boostUsedPerFrame = 10f;
+	
+	Rigidbody rb;
+	float maxBoostBarWidth;
+	float maxBoostBarHeight;
 
 	// values at runtime
 	public float currentBoost = 0f;
@@ -32,6 +39,15 @@ public class Pod : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		currentSpeed = speedModifier;
 		currentBoost = boostQuantity;
+		// If it's not the intro (doesn't have UI)
+		if(SceneManager.GetActiveScene().buildIndex != 0){
+			// RectTransform width
+			maxBoostBarWidth = boostBarContainer.sizeDelta.x;
+			// RectTransform height
+			maxBoostBarHeight = boostBarContainer.sizeDelta.y;
+			// Mask top offset
+			maxBoostBarHeight += -boostBarFill.transform.parent.GetComponent<RectTransform>().offsetMax.y;
+		}
 	}
 	
 	// Update is called once per frame
@@ -104,6 +120,21 @@ public class Pod : MonoBehaviour {
 			if(currentBoost > boostQuantity)
 				currentBoost = boostQuantity;
 		}
+		// If it's not the intro (doesn't have UI)
+		if(SceneManager.GetActiveScene().buildIndex != 0)
+			UpdateBoostBarUI();
+	}
+
+	private void UpdateBoostBarUI(){
+		float ratio = 1f - currentBoost / boostQuantity;
+		// Left and Right offset
+		float hor = - maxBoostBarWidth / 2 * ratio;
+		// Top offset
+		float ver = maxBoostBarHeight / 2 * ratio;
+		// New Vector2(left, bottom)
+		boostBarFill.offsetMin = new Vector2(hor, 0); 
+		// New Vector2(-right, -top)
+		boostBarFill.offsetMax = new Vector2(-hor, -ver);
 	}
 
 	private void OnTriggerEnter(Collider collider) {

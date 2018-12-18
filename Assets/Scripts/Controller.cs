@@ -10,7 +10,6 @@ public class Controller : MonoBehaviour {
 	// UI
 	[SerializeField] Text leftLabel;
 	[SerializeField] Text rightLabel;
-	[SerializeField] Text boostLabel;
 
 	// Particle GameObject
 	[SerializeField] ParticleSystem particleRight;
@@ -61,7 +60,6 @@ public class Controller : MonoBehaviour {
 			// ui
 			leftLabel.text = intensity[0].ToString();
 			rightLabel.text = intensity[1].ToString();
-			boostLabel.text = pod.currentBoost.ToString();
 
 			// particle
 			particleLeft.Emit(Mathf.RoundToInt(Mathf.Abs(intensity[0] * 1000)));
