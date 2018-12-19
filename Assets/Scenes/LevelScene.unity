@@ -1870,6 +1870,28 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 114558158348233308, guid: a1c06640e5a364a0786595e87a2beb03,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d5cfb095a71214440b94415e8cee9502,
+        type: 3}
+    - target: {fileID: 114451755164181820, guid: a1c06640e5a364a0786595e87a2beb03,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a6d948e982efd90458703f8c8d32d9d1,
+        type: 3}
+    - target: {fileID: 114990890487887726, guid: a1c06640e5a364a0786595e87a2beb03,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114905898575409064, guid: a1c06640e5a364a0786595e87a2beb03,
+        type: 2}
+      propertyPath: boostRegeneration
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1c06640e5a364a0786595e87a2beb03, type: 2}
   m_IsPrefabAsset: 0
