@@ -83,6 +83,8 @@ public class Controller : MonoBehaviour {
             //handleLeft.transform.Rotate(Vector3.right, intensity[0] * 40f);
             handleRight.transform.localPosition = new Vector3(handleRight.transform.localPosition.x, handleRight.transform.localPosition.y, rightOriginalPosition.z + intensity[1] * 0.1f);
 
+            handleLeft.transform.rotation = Quaternion.RotateTowards(handleLeft.transform.rotation, transform.rotation * Quaternion.Euler(10f * intensity[0], 0f, 0f), 1f);
+            handleRight.transform.rotation = Quaternion.RotateTowards(handleRight.transform.rotation, transform.rotation * Quaternion.Euler(10f * intensity[1], 0f, 0f), 1f);
 
         }
 	}
