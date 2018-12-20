@@ -15,8 +15,6 @@ public class Controller : MonoBehaviour {
     // Handles
     [SerializeField] GameObject handleLeft;
     [SerializeField] GameObject handleRight;
-    Vector3 leftOriginalPosition;
-    Vector3 rightOriginalPosition;
 
     // Leap
     Leap.Controller leapController;
@@ -36,9 +34,6 @@ public class Controller : MonoBehaviour {
 	void Start () {
 		pod = GetComponent<Pod>();
         leapController = new Leap.Controller();
-
-        leftOriginalPosition = handleLeft.transform.localPosition;
-        rightOriginalPosition = handleRight.transform.position;
 	}
 	
 	// Update is called once per frame

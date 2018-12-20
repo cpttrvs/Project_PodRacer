@@ -20,7 +20,6 @@ public class IntroScene : MonoBehaviour {
 	[SerializeField] GameObject handleLeft;
 	[SerializeField] GameObject handleRight;
 
-	bool loadTutorial;
 	Color fadeColor;
 	CanvasGroup canvasGroup;
 
@@ -29,15 +28,9 @@ public class IntroScene : MonoBehaviour {
 	// Pod
 	Pod pod;
 
-	// Leap
-	Leap.Controller leapController;
-	Leap.Frame frame;
-
 	// Use this for initialization
 	void Start () {
-		loadTutorial = false;
 		pod = GetComponent<Pod>();
-		leapController = new Leap.Controller();
 		fadeColor = fadeQuad.GetComponent<MeshRenderer>().material.color;
 		canvasGroup = canvasGO.GetComponent<CanvasGroup>();
 		StartCoroutine(FadeIn());
@@ -47,33 +40,12 @@ public class IntroScene : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		frame = leapController.Frame();
+
+		if(Input.GetKeyDown(KeyCode.Space))
+			StartCoroutine(LoadLevel());
 
 		handleLeft.transform.rotation = Quaternion.RotateTowards(handleLeft.transform.rotation, transform.rotation * Quaternion.Euler(20f * intensity[0], 0f, 0f), 1f);
 		handleRight.transform.rotation = Quaternion.RotateTowards(handleRight.transform.rotation, transform.rotation * Quaternion.Euler(20f * intensity[1], 0f, 0f), 1f);
-
-		if(frame.Hands.Count == 2) {
-			if(Vector3.Distance(new Vector3(frame.Hands[0].PalmPosition.x, frame.Hands[0].PalmPosition.y, frame.Hands[0].PalmPosition.z), 
-								new Vector3(frame.Hands[1].PalmPosition.x, frame.Hands[1].PalmPosition.y, frame.Hands[1].PalmPosition.z)) < 30f){
-				loadTutorial = true;
-			}
-		}
-		else if(Input.GetKeyDown(KeyCode.Space)){
-				loadTutorial = true;
-		}
-
-		if(loadTutorial){			
-			// The screen turns black
-			if(fadeColor.a < 1){
-				fadeColor.a += Time.deltaTime;
-				canvasGroup.alpha -= Time.deltaTime;
-				fadeQuad.GetComponent<MeshRenderer>().material.color = fadeColor;
-			}
-			// We switch scenes
-			else if(fadeColor.a > 1){
-				SceneManager.LoadScene("LevelScene");
-			}			
-		}
 
 		pod.Move(intensity);
 
@@ -102,11 +74,25 @@ public class IntroScene : MonoBehaviour {
 		yield return null;
 	}
 
+	IEnumerator LoadLevel(){
+		//yield return new WaitForSeconds(3);
+		// The screen turns black
+		while(fadeColor.a < 1){
+			fadeColor.a += Time.deltaTime;
+			canvasGroup.alpha -= Time.deltaTime;
+			fadeQuad.GetComponent<MeshRenderer>().material.color = fadeColor;
+			yield return null;
+		}
+		// We switch scenes
+		SceneManager.LoadScene("LevelScene");
+		yield return null;
+	}
+
 	private void OnTriggerEnter(Collider collider) {
 		if(collider.name.Equals("BannerTrigger"))
 			titleBanner.SetActive(true);
-		else if(collider.name.Equals("HandTrigger"))
-			handModels.SetActive(true);
+		else if(collider.name.Equals("LevelTrigger"))
+			StartCoroutine(LoadLevel());
 		else if(collider.name.Equals("TurnTrigger"))
 			intensity[0] = 0f;
 		else if(collider.name.Equals("LoseTrigger"))
