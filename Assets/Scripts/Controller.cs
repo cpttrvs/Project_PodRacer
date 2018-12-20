@@ -23,7 +23,6 @@ public class Controller : MonoBehaviour {
     float rightRaw = 0f;
 
 	// Inputs
-	bool leapMotion = true;
 	float[] intensity = {0f, 0f}; // between -1 and 1
 	bool boost = false;
 
@@ -39,7 +38,7 @@ public class Controller : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		// inputs
-		if(leapMotion) {
+		if(leapController.IsConnected) {
 			LeapMotionInput();
 		}
 		else {
@@ -81,6 +80,9 @@ public class Controller : MonoBehaviour {
 			intensity[0] = Input.GetAxis("LeftPod");
 			intensity[1] = Input.GetAxis("RightPod");
 			boost = Input.GetButton("Fire1");
+			if(Input.GetKeyDown(KeyCode.R)){
+				FindObjectOfType<GameManager>().SendMessage("RestartLevel");
+			}
 		}
 	}
 

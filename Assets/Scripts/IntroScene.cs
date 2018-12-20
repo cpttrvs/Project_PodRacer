@@ -9,7 +9,6 @@ public class IntroScene : MonoBehaviour {
 	[SerializeField] GameObject fadeQuad;
 
 	[SerializeField] GameObject titleBanner;
-	[SerializeField] GameObject handModels;
 
 	// Particle GameObject
 	[SerializeField] ParticleSystem particleLeft;
