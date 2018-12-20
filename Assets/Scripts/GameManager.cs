@@ -19,8 +19,10 @@ public class GameManager : MonoBehaviour {
 	// Gameplay UI
 	[SerializeField] GameObject gameplayUI;
 	[SerializeField] Text hightimeText;
+	[SerializeField] TextMesh hightime3DText;
 	[SerializeField] Text countdownText;
 	[SerializeField] Text timerText;
+	[SerializeField] TextMesh timer3DText;
 	[SerializeField] Text tipText;
 
 	// Finish UI
@@ -48,6 +50,7 @@ public class GameManager : MonoBehaviour {
 		if(gameOn){
 			timer += Time.deltaTime;
 			timerText.text = FormatTime(timer);
+			timer3DText.text = "\n"+FormatTime(timer);
 		}
 		// We finished the level
 		else if(!gameOn && timer > 0){
@@ -153,10 +156,12 @@ public class GameManager : MonoBehaviour {
 		}
 		if(time > 0){
 			hightimeText.text = "Hightime: "+FormatTime(time);
+			hightime3DText.text = "Best time\n"+FormatTime(time);
 		}
 		// No hightime yet
 		else{
 			hightimeText.text = "";
+			hightime3DText.text = "";
 		}
 	}
 

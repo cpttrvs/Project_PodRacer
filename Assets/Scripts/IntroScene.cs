@@ -6,19 +6,23 @@ using Leap;
 
 public class IntroScene : MonoBehaviour {
 
+	[SerializeField] GameObject fadeQuad;
+
 	[SerializeField] GameObject titleBanner;
 	[SerializeField] GameObject handModels;
 	[SerializeField] GameObject canvasGO;
 
-	[SerializeField] GameObject fadeQuad;
+	// Particle GameObject
+	[SerializeField] ParticleSystem particleLeft;
+	[SerializeField] ParticleSystem particleRight;
+
+	// Pod Handles
+	[SerializeField] GameObject handleLeft;
+	[SerializeField] GameObject handleRight;
 
 	bool loadTutorial;
 	Color fadeColor;
 	CanvasGroup canvasGroup;
-
-	// Particle GameObject
-	[SerializeField] ParticleSystem particleRight;
-	[SerializeField] ParticleSystem particleLeft;
 
 	float[] intensity = {0f, 0f};
 	
@@ -44,6 +48,10 @@ public class IntroScene : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		frame = leapController.Frame();
+
+		//handleLeft.transform.rotation = Quaternion.RotateTowards(handleLeft.transform.rotation, transform.rotation * Quaternion.Euler(20f * intensity[0], 0f, 0f), 1f);
+		//handleRight.transform.rotation = Quaternion.RotateTowards(handleRight.transform.rotation, transform.rotation * Quaternion.Euler(20f * intensity[1], 0f, 0f), 1f);
+
 		if(frame.Hands.Count == 2) {
 			if(Vector3.Distance(new Vector3(frame.Hands[0].PalmPosition.x, frame.Hands[0].PalmPosition.y, frame.Hands[0].PalmPosition.z), 
 								new Vector3(frame.Hands[1].PalmPosition.x, frame.Hands[1].PalmPosition.y, frame.Hands[1].PalmPosition.z)) < 30f){
@@ -100,9 +108,9 @@ public class IntroScene : MonoBehaviour {
 		else if(collider.name.Equals("HandTrigger"))
 			handModels.SetActive(true);
 		else if(collider.name.Equals("TurnTrigger"))
-			intensity[0] = 0;
+			intensity[0] = 0f;
 		else if(collider.name.Equals("LoseTrigger"))
-			intensity[1] = 0;
+			intensity[1] = 0f;
 		else if(collider.name.Equals("ClapTrigger"))
 			canvasGO.SetActive(true);
 	}

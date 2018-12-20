@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Leap;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Pod))]
 public class Controller : MonoBehaviour {
-
-	// UI
-	[SerializeField] GameObject leftLabel;
-	[SerializeField] GameObject rightLabel;
 
 	// Particle GameObject
 	[SerializeField] ParticleSystem particleRight;
@@ -28,7 +25,7 @@ public class Controller : MonoBehaviour {
     float rightRaw = 0f;
 
 	// Inputs
-	bool leapMotion = false;
+	bool leapMotion = true;
 	float[] intensity = {0f, 0f}; // between -1 and 1
 	bool boost = false;
 
@@ -66,10 +63,6 @@ public class Controller : MonoBehaviour {
             pod.Move(intensity);
 			pod.Boost(boost);
 
-			// ui
-			leftLabel.GetComponent<TextMesh>().text = intensity[0].ToString();
-			rightLabel.GetComponent<TextMesh>().text = intensity[1].ToString();
-
 			// particle
 			particleLeft.Emit(Mathf.RoundToInt(Mathf.Abs(intensity[0] * 1000)));
 			particleRight.Emit(Mathf.RoundToInt(Mathf.Abs(intensity[1] * 1000)));
@@ -77,14 +70,8 @@ public class Controller : MonoBehaviour {
 			particleLeft.GetComponent<ParticleSystemRenderer>().pivot = new Vector3(intensity[0], 0, 0);
 			particleRight.GetComponent<ParticleSystemRenderer>().pivot = new Vector3(intensity[1], 0, 0);
 
-            // handles
-            // extremum : 40 xRotation, 0.1 zPosition
-            handleLeft.transform.localPosition = new Vector3(handleLeft.transform.localPosition.x, handleLeft.transform.localPosition.y, leftOriginalPosition.z + intensity[0] * 0.1f);
-            //handleLeft.transform.Rotate(Vector3.right, intensity[0] * 40f);
-            handleRight.transform.localPosition = new Vector3(handleRight.transform.localPosition.x, handleRight.transform.localPosition.y, rightOriginalPosition.z + intensity[1] * 0.1f);
-
-            handleLeft.transform.rotation = Quaternion.RotateTowards(handleLeft.transform.rotation, transform.rotation * Quaternion.Euler(10f * intensity[0], 0f, 0f), 1f);
-            handleRight.transform.rotation = Quaternion.RotateTowards(handleRight.transform.rotation, transform.rotation * Quaternion.Euler(10f * intensity[1], 0f, 0f), 1f);
+            handleLeft.transform.rotation = Quaternion.RotateTowards(handleLeft.transform.rotation, transform.rotation * Quaternion.Euler(20f * intensity[0], 0f, 0f), 1f);
+            handleRight.transform.rotation = Quaternion.RotateTowards(handleRight.transform.rotation, transform.rotation * Quaternion.Euler(20f * intensity[1], 0f, 0f), 1f);
 
         }
 	}

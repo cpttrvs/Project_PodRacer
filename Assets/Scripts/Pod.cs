@@ -18,10 +18,6 @@ public class Pod : MonoBehaviour {
 	[SerializeField] float boostModifier = 4f;
 	[SerializeField] float boostRegeneration = 3f;
 	[SerializeField] float boostUsedPerFrame = 10f;
-
-	// sticks
-	[SerializeField] GameObject leftStick;
-	[SerializeField] GameObject rightStick;
 	
 	Rigidbody rb;
 	float maxBoostBarWidth;
@@ -59,10 +55,6 @@ public class Pod : MonoBehaviour {
 		//Debug.Log(currentBoost);
 		//Debug.Log("velocity: "+rb.velocity+" KM/H: "+rb.velocity.z/1000*60*60);
 	
-		// Rotate the sticks giving the intensities
-		//leftStick.transform.rotation = Quaternion.RotateTowards(leftStick.transform.rotation, transform.rotation * Quaternion.Euler(20f*thrusterIntensity[0], 0f, 0f), 1f);		
-		//rightStick.transform.rotation = Quaternion.RotateTowards(rightStick.transform.rotation, transform.rotation * Quaternion.Euler(20f*thrusterIntensity[1], 0f, 0f), 1f);
-
 		Quaternion desiredRotation = transform.rotation;
 		// Not tilting
 		if(thrusterIntensity[0] == thrusterIntensity[1]){
