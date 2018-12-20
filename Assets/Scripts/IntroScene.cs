@@ -63,7 +63,7 @@ public class IntroScene : MonoBehaviour {
 			}
 			// We switch scenes
 			else if(fadeColor.a > 1){
-				SceneManager.LoadScene(1);
+				SceneManager.LoadScene("LevelScene");
 			}			
 		}
 

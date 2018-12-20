@@ -1210,6 +1210,48 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 6424d87afda7c084f8ca90bf51fd6e04,
     type: 2}
   m_PrefabInternal: {fileID: 586063334}
+--- !u!1001 &371891457
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4201293443158662, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -0.81752914
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201293443158662, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.09681535
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201293443158662, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201293443158662, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201293443158662, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201293443158662, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201293443158662, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201293443158662, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ec5726ecfc3a79c4ba463dc7a96cc6db, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1001 &407364251
 Prefab:
   m_ObjectHideFlags: 0
@@ -1891,6 +1933,10 @@ Prefab:
         type: 2}
       propertyPath: boostRegeneration
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1406622770802306, guid: a1c06640e5a364a0786595e87a2beb03, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1c06640e5a364a0786595e87a2beb03, type: 2}

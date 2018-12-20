@@ -8,12 +8,18 @@ using Leap;
 public class Controller : MonoBehaviour {
 
 	// UI
-	[SerializeField] Text leftLabel;
-	[SerializeField] Text rightLabel;
+	[SerializeField] GameObject leftLabel;
+	[SerializeField] GameObject rightLabel;
 
 	// Particle GameObject
 	[SerializeField] ParticleSystem particleRight;
 	[SerializeField] ParticleSystem particleLeft;
+
+    // Handles
+    [SerializeField] GameObject handleLeft;
+    [SerializeField] GameObject handleRight;
+    Vector3 leftOriginalPosition;
+    Vector3 rightOriginalPosition;
 
     // Leap
     Leap.Controller leapController;
@@ -33,6 +39,9 @@ public class Controller : MonoBehaviour {
 	void Start () {
 		pod = GetComponent<Pod>();
         leapController = new Leap.Controller();
+
+        leftOriginalPosition = handleLeft.transform.localPosition;
+        rightOriginalPosition = handleRight.transform.position;
 	}
 	
 	// Update is called once per frame
@@ -58,8 +67,8 @@ public class Controller : MonoBehaviour {
 			pod.Boost(boost);
 
 			// ui
-			leftLabel.text = intensity[0].ToString();
-			rightLabel.text = intensity[1].ToString();
+			leftLabel.GetComponent<TextMesh>().text = intensity[0].ToString();
+			rightLabel.GetComponent<TextMesh>().text = intensity[1].ToString();
 
 			// particle
 			particleLeft.Emit(Mathf.RoundToInt(Mathf.Abs(intensity[0] * 1000)));
@@ -67,7 +76,15 @@ public class Controller : MonoBehaviour {
 
 			particleLeft.GetComponent<ParticleSystemRenderer>().pivot = new Vector3(intensity[0], 0, 0);
 			particleRight.GetComponent<ParticleSystemRenderer>().pivot = new Vector3(intensity[1], 0, 0);
-		}
+
+            // handles
+            // extremum : 40 xRotation, 0.1 zPosition
+            handleLeft.transform.localPosition = new Vector3(handleLeft.transform.localPosition.x, handleLeft.transform.localPosition.y, leftOriginalPosition.z + intensity[0] * 0.1f);
+            //handleLeft.transform.Rotate(Vector3.right, intensity[0] * 40f);
+            handleRight.transform.localPosition = new Vector3(handleRight.transform.localPosition.x, handleRight.transform.localPosition.y, rightOriginalPosition.z + intensity[1] * 0.1f);
+
+
+        }
 	}
 
     float Round(float value, int digits) {
