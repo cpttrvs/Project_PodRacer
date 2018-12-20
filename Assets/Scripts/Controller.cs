@@ -97,10 +97,9 @@ public class Controller : MonoBehaviour {
             }
         }
         else if(frame.Hands.Count == 2) {
-			// If we finished the level we can restart it by clapping in our hands! *CLAP*
-			if(GameManager.LevelFinished() && 
-				Vector3.Distance(new Vector3(frame.Hands[0].PalmPosition.x, frame.Hands[0].PalmPosition.y, frame.Hands[0].PalmPosition.z), 
-								new Vector3(frame.Hands[1].PalmPosition.x, frame.Hands[1].PalmPosition.y, frame.Hands[1].PalmPosition.z)) < 30f){
+			// We can restart the level by clapping
+			if(Vector3.Distance(new Vector3(frame.Hands[0].PalmPosition.x, frame.Hands[0].PalmPosition.y, frame.Hands[0].PalmPosition.z), 
+								new Vector3(frame.Hands[1].PalmPosition.x, frame.Hands[1].PalmPosition.y, frame.Hands[1].PalmPosition.z)) < 50f){
 									FindObjectOfType<GameManager>().SendMessage("RestartLevel");
 			}
 			// For the boost we make fists with our hands, we only check on the index finger 'cause less costly and works fine

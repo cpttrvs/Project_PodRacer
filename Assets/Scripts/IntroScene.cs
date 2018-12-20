@@ -10,7 +10,6 @@ public class IntroScene : MonoBehaviour {
 
 	[SerializeField] GameObject titleBanner;
 	[SerializeField] GameObject handModels;
-	[SerializeField] GameObject canvasGO;
 
 	// Particle GameObject
 	[SerializeField] ParticleSystem particleLeft;
@@ -21,7 +20,6 @@ public class IntroScene : MonoBehaviour {
 	[SerializeField] GameObject handleRight;
 
 	Color fadeColor;
-	CanvasGroup canvasGroup;
 
 	float[] intensity = {0f, 0f};
 	
@@ -32,7 +30,6 @@ public class IntroScene : MonoBehaviour {
 	void Start () {
 		pod = GetComponent<Pod>();
 		fadeColor = fadeQuad.GetComponent<MeshRenderer>().material.color;
-		canvasGroup = canvasGO.GetComponent<CanvasGroup>();
 		StartCoroutine(FadeIn());
 		intensity[0] = 1;
 		intensity[1] = 1;
@@ -79,7 +76,6 @@ public class IntroScene : MonoBehaviour {
 		// The screen turns black
 		while(fadeColor.a < 1){
 			fadeColor.a += Time.deltaTime;
-			canvasGroup.alpha -= Time.deltaTime;
 			fadeQuad.GetComponent<MeshRenderer>().material.color = fadeColor;
 			yield return null;
 		}
@@ -97,7 +93,5 @@ public class IntroScene : MonoBehaviour {
 			intensity[0] = 0f;
 		else if(collider.name.Equals("LoseTrigger"))
 			intensity[1] = 0f;
-		else if(collider.name.Equals("ClapTrigger"))
-			canvasGO.SetActive(true);
 	}
 }
