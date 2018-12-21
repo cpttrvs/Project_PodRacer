@@ -50,7 +50,6 @@ public class Pod : MonoBehaviour {
 		}
 	}
 	
-	// Update is called once per frame
 	void FixedUpdate () {
 		//Debug.Log(currentBoost);
 		//Debug.Log("velocity: "+rb.velocity+" KM/H: "+rb.velocity.z/1000*60*60);

@@ -35,9 +35,8 @@ public class Controller : MonoBehaviour {
         leapController = new Leap.Controller();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		// inputs
+	void FixedUpdate () {
+		// Inputs
 		if(leapController.IsConnected) {
 			LeapMotionInput();
 		}
@@ -46,24 +45,24 @@ public class Controller : MonoBehaviour {
 		}
 
 		if(GameManager.GameOn()){
-			//reduce speed
+			// Reduce the pod's speed
 			intensity[0] -= Time.deltaTime;
 			intensity[1] -= Time.deltaTime;
 
             intensity[0] = Round(intensity[0], 1);
             intensity[1] = Round(intensity[1], 1);
 
-            // gameplay
+            // Add force & boost to the pod
             pod.Move(intensity);
 			pod.Boost(boost);
 
-			// particle
-			particleLeft.Emit(Mathf.RoundToInt(Mathf.Abs(intensity[0] * 1000)));
+            // Update the particle effect
+            particleLeft.Emit(Mathf.RoundToInt(Mathf.Abs(intensity[0] * 1000)));
 			particleRight.Emit(Mathf.RoundToInt(Mathf.Abs(intensity[1] * 1000)));
-
 			particleLeft.GetComponent<ParticleSystemRenderer>().pivot = new Vector3(intensity[0], 0, 0);
 			particleRight.GetComponent<ParticleSystemRenderer>().pivot = new Vector3(intensity[1], 0, 0);
 
+            // Rotate the handle given the intensity
             handleLeft.transform.rotation = Quaternion.RotateTowards(handleLeft.transform.rotation, transform.rotation * Quaternion.Euler(20f * intensity[0], 0f, 0f), 1f);
             handleRight.transform.rotation = Quaternion.RotateTowards(handleRight.transform.rotation, transform.rotation * Quaternion.Euler(20f * intensity[1], 0f, 0f), 1f);
 
@@ -75,18 +74,24 @@ public class Controller : MonoBehaviour {
         return Mathf.Round(value * mult) / mult;
     }
 
+    // If no leap motion device is connected we can use the keyboard instead
     void KeyboardInput() {
 		if(GameManager.GameOn()){
 			intensity[0] = Input.GetAxis("LeftPod");
 			intensity[1] = Input.GetAxis("RightPod");
 			boost = Input.GetButton("Fire1");
-			if(Input.GetKeyDown(KeyCode.R)){
-				FindObjectOfType<GameManager>().SendMessage("RestartLevel");
-			}
-		}
-	}
+            if(Input.GetKeyDown(KeyCode.R)){
+                FindObjectOfType<GameManager>().SendMessage("RestartLevel");
+            }
+        }
+        if (GameManager.LevelFinished() && Input.GetKeyDown(KeyCode.R)) {
+            FindObjectOfType<GameManager>().SendMessage("RestartLevel");
+        }
+    }
 
+    // A leap motion device is connected, we use our hands to control the pod
 	void LeapMotionInput() {
+        // Max distance to restrict the player's hand/arm movement
         float range = 50f;
         frame = leapController.Frame();
 		// We retrieve the hand position information
@@ -98,6 +103,7 @@ public class Controller : MonoBehaviour {
                 rightRaw = frame.Hands[0].PalmPosition.z;
             }
         }
+        // We retrieve the correct hand position information
         else if(frame.Hands.Count == 2) {
 			// We can restart the level by clapping
 			if(Vector3.Distance(new Vector3(frame.Hands[0].PalmPosition.x, frame.Hands[0].PalmPosition.y, frame.Hands[0].PalmPosition.z), 
@@ -126,6 +132,7 @@ public class Controller : MonoBehaviour {
         if (rightRaw < -range || rightRaw > range) {
             rightRaw = range * Mathf.Sign(rightRaw);
         }
+        // We assign the hand position information to the intensities
 		if(GameManager.GameOn()){
 			intensity[0] = - leftRaw / range;
 			intensity[1] = - rightRaw / range;

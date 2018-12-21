@@ -6,22 +6,23 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
+    // PlayerPrefs storage
 	private static string PREFS_TUTORIAL_TIME = "TUTORIAL_TIME";
 	private static string PREFS_LEVEL_TIME = "LEVEL_TIME";
+    // Game status
 	private static bool gameOn;
 	private static bool levelFinished;
 	private static float timer;
 	private static bool firstLoad = true;
 
+    // UI for fade purposes
 	[SerializeField] GameObject fadeQuad;
 	[SerializeField] GameObject canvas;
 
 	// Gameplay UI
 	[SerializeField] GameObject gameplayUI;
-	[SerializeField] Text hightimeText;
 	[SerializeField] TextMesh hightime3DText;
 	[SerializeField] Text countdownText;
-	[SerializeField] Text timerText;
 	[SerializeField] TextMesh timer3DText;
 	[SerializeField] Text tipText;
 
@@ -33,10 +34,12 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		SetHighTime();
+        // If we came for the intro scene we fade in
 		if(firstLoad){
 			firstLoad = false;
 			StartCoroutine(FadeIn());
 		}
+        // Else we just go straight to the countdown
 		else{
 			StartCoroutine(Countdown());
 		}
@@ -45,21 +48,15 @@ public class GameManager : MonoBehaviour {
 		timer = 0f;
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
+        // If the game is on we update the timer and show it
 		if(gameOn){
 			timer += Time.deltaTime;
-			timerText.text = FormatTime(timer);
 			timer3DText.text = "\n"+FormatTime(timer);
-		}
-		// We finished the level
-		else if(!gameOn && timer > 0){
-			if(Input.GetKeyDown(KeyCode.Space)){
-				RestartLevel();
-			}
 		}
 	}
 
+	// Fades the game in
 	IEnumerator FadeIn(){
 		Color fadeColor = fadeQuad.GetComponent<MeshRenderer>().material.color;
 		CanvasGroup canvasGroup = canvas.GetComponent<CanvasGroup>();
@@ -82,6 +79,7 @@ public class GameManager : MonoBehaviour {
 		yield return null;
 	}
 
+	// Race 3 2 1 countdown
 	IEnumerator Countdown(){
 		countdownText.gameObject.SetActive(true);
 		for(int i=3; i>0; i--){
@@ -96,6 +94,7 @@ public class GameManager : MonoBehaviour {
 		countdownText.text = "";
 	}
 
+	// If a new high time is set a blinking text appears
 	IEnumerator Hightime(){
 		newHightimeText.gameObject.SetActive(true);
 		while(true){
@@ -114,24 +113,25 @@ public class GameManager : MonoBehaviour {
 		return levelFinished;
 	}
 
+	// On crossing the finish line we need to update the different timers
 	public void CrossedFinishLine(){
 		gameOn = false;
 		levelFinished = true;
 		finishTimeText.text = FormatTime(timer);
 		bool newTime = false;
-		// Tutorial
+		// Tutorial new high time
 		if(SceneManager.GetActiveScene().buildIndex == 1 && 
 			(timer < PlayerPrefs.GetFloat(PREFS_TUTORIAL_TIME) || PlayerPrefs.GetFloat(PREFS_TUTORIAL_TIME) == 0)){
 				PlayerPrefs.SetFloat(PREFS_TUTORIAL_TIME, timer);
 				newTime = true;
 		}
-		// Level
+		// Level new high time
 		else if(SceneManager.GetActiveScene().buildIndex == 2 && 
 			(timer < PlayerPrefs.GetFloat(PREFS_LEVEL_TIME) || PlayerPrefs.GetFloat(PREFS_LEVEL_TIME) == 0)){
 				PlayerPrefs.SetFloat(PREFS_LEVEL_TIME, timer);
 				newTime = true;
 		}
-		// New hightime
+		// Set the new high time and show the blinking text
 		if(newTime){
 			SetHighTime();
 			StartCoroutine(Hightime());
@@ -144,6 +144,10 @@ public class GameManager : MonoBehaviour {
 		return time.ToString("F2").Replace(",", ".")+"s";
 	}
 
+	public void RestartLevel(){
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}
+
 	private void SetHighTime(){
 		float time = 0f;
 		// Tutorial
@@ -154,18 +158,13 @@ public class GameManager : MonoBehaviour {
 		else if(SceneManager.GetActiveScene().buildIndex == 2){
 			time = PlayerPrefs.GetFloat(PREFS_LEVEL_TIME);
 		}
+
 		if(time > 0){
-			hightimeText.text = "Hightime: "+FormatTime(time);
 			hightime3DText.text = "Best time\n"+FormatTime(time);
 		}
 		// No hightime yet
 		else{
-			hightimeText.text = "";
 			hightime3DText.text = "";
 		}
-	}
-
-	public void RestartLevel(){
-		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 }
